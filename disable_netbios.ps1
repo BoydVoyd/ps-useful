@@ -12,7 +12,6 @@
 }
 
 $mydocs = [Environment]::GetFolderPath("MyDocuments")
-
 $inputfile = Get-FileName  $mydocs "Choose a text file with a list of SamAccountNames"
 
 $inputfile
