@@ -1,9 +1,18 @@
-﻿#Start PSRemoting 
-$results = Invoke-Command -scriptblock { 
-#Run the commands concurrently for each server in the list
-
-    $adapters=(gwmi win32_networkadapterconfiguration )
-    Foreach ($adapter in $adapters){
-        $adapter.settcpipnetbios(2)
-        }
+﻿Function Get-FileName($initialDirectory,$Title)
+{
+    [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") | Out-Null
+    
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.initialDirectory = $initialDirectory
+    $OpenFileDialog.title = $Title
+    $OpenFileDialog.filter = "CSV (*.csv)| *.csv|TXT (*.txt)|*.txt"
+    $OpenFileDialog.filterindex = 2
+    $OpenFileDialog.ShowDialog() | Out-Null
+    $OpenFileDialog.filename
 }
+
+$mydocs = [Environment]::GetFolderPath("MyDocuments")
+
+$inputfile = Get-FileName  $mydocs "Choose a text file with a list of SamAccountNames"
+
+$inputfile
