@@ -11,7 +11,7 @@
     $OpenFileDialog.filename
 }
 
-$mydocs = [Environment]::GetFolderPath("MyDocuments")
-$inputfile = Get-FileName  $mydocs "Choose a text file with a list of SamAccountNames"
+#$mydocs = [Environment]::GetFolderPath("MyDocuments")
+$inputfile = Get-FileName  "C:\Users\ndavis\Source\Repos\psuseful" "Choose a text file with a list computers"
 
 $inputfile
