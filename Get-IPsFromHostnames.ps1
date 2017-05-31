@@ -36,7 +36,7 @@ Param(
     [string]$outputDir=(Split-Path $hostFile)
 )
 
-$resutlsFile = $outputDir + "\ip_lookup_results_$(get-date -f dd-MM-yyyy-HHmmss).csv"
+$resutlsFile = $outputDir + "\ip_lookup_results_$(get-date -f dd-MM-yyyy-HHmmss).xlsx"
 $devices = get-content $hostFile
 $infoObjects = @()
 foreach ($device in $devices)
@@ -48,7 +48,7 @@ foreach ($device in $devices)
     catch { 
         $infoObject = New-Object PSObject
         Add-Member -inputObject $infoObject -memberType NoteProperty -name "DeviceName" -value $device
-        Add-Member -inputObject $infoObject -memberType NoteProperty -name "IP" -value "IP Not Found"
+        Add-Member -inputObject $infoObject -memberType NoteProperty -name "IP" -value "999.999.999.999"
         $infoObjects += $infoObject 
     }
     foreach($address in $addresses) {
@@ -59,4 +59,4 @@ foreach ($device in $devices)
     }
 }
 
-$infoObjects #| Sort-Object IP | Export-Csv $resutlsFile -NoTypeInformation
+$infoObjects | Sort-Object { [system.version]$_.IP } | Export-Excel $resutlsFile
