@@ -59,4 +59,4 @@ foreach ($device in $devices)
     }
 }
 
-$infoObjects | Export-Csv $resutlsFile -NoTypeInformation
+$infoObjects #| Sort-Object IP | Export-Csv $resutlsFile -NoTypeInformation
