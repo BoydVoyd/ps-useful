@@ -36,11 +36,12 @@ Param(
     [string]$outputDir=(Split-Path $hostFile)
 )
 
-$resutlsFile = $outputDir + "\ip_lookup_results_$(get-date -f dd-MM-yyyy-HHmmss).xlsx"
+$resutlsFile = $outputDir + "\ip_lookup_results_$(get-date -f MM-dd-yyyy-HHmmss).xlsx"
 $devices = get-content $hostFile
 $infoObjects = @()
 foreach ($device in $devices)
 {
+    #Write-Host $device
     $addresses = $null
     try {
         $addresses = [System.Net.Dns]::GetHostAddresses("$device").IPAddressToString
