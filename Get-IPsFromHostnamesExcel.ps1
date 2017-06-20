@@ -32,32 +32,26 @@
 
 Param(
 
-    [string]$hostFile= (Split-Path $MyInvocation.MyCommand.Path) + '\hosts.txt',
+    [string]$hostFile= (Split-Path $MyInvocation.MyCommand.Path) + '\hosts.xlsx',
     [string]$outputDir=(Split-Path $hostFile)
 )
 
-$resutlsFile = $outputDir + "\ip_lookup_results_$(get-date -f MM-dd-yyyy-HHmmss).xlsx"
-$devices = get-content $hostFile
-$infoObjects = @()
+$hostFileName = (Split-Path $hostFile -Leaf).split(".")[0]
+$resutlsFile = $outputDir + "\" + $hostFileName + "_withIPs_$(get-date -f MM-dd-yyyy-HHmmss).xlsx"
+$devices = Import-Excel $hostFile
 foreach ($device in $devices)
 {
-    Write-Host $device
+    Write-Host $device.Name
     $addresses = $null
     try {
-        $addresses = [System.Net.Dns]::GetHostAddresses("$device").IPAddressToString
+        $addresses = [System.Net.Dns]::GetHostAddresses($device.Name).IPAddressToString
     }
     catch { 
-        $infoObject = New-Object PSObject
-        Add-Member -inputObject $infoObject -memberType NoteProperty -name "DeviceName" -value $device
-        Add-Member -inputObject $infoObject -memberType NoteProperty -name "IP" -value "999.999.999.999"
-        $infoObjects += $infoObject 
+        Add-Member -inputObject $device -memberType NoteProperty -name "IP" -value "999.999.999.999"
     }
     foreach($address in $addresses) {
-        $infoObject = New-Object PSObject
-        Add-Member -inputObject $infoObject -memberType NoteProperty -name "DeviceName" -value $device
-        Add-Member -inputObject $infoObject -memberType NoteProperty -name "IP" -value $address
-        $infoObjects += $infoObject 
+        Add-Member -inputObject $device -memberType NoteProperty -name "IP" -value $address
     }
 }
 
-$infoObjects | Sort-Object { [system.version]$_.IP } | Export-Excel $resutlsFile
+$devices | Sort-Object { [system.version]$_.IP } | Export-Excel $resutlsFile
